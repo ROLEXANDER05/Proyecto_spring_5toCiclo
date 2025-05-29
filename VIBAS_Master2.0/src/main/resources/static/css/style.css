@@ -1,0 +1,167 @@
+/* Estilo general para todo el sitio */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Encabezados */
+h2,h3,h4{
+	font-size: 16px;
+}
+
+/* Tabla con estilo */
+.table {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Botones personalizados */
+.btn {
+    font-weight: bold;
+    padding: 6px 14px;
+}
+
+/* Botones individuales */
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+    color: #212529;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+/* main fijo */
+.container {
+    /*min-height: 72vh;*/
+}
+
+/* Estilos para el dropdown personalizado */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    min-width: 200px;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.dropdown-menu .dropdown-item {
+    padding: 10px 16px;
+    color: #333;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 8px 0;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Estilo para el botón de usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.nav-container-menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center; /* Alinea los elementos verticalmente al centro */
+    flex-wrap: wrap; /* Permite que los elementos salten de línea si es necesario */
+}
+
+.nav-container-menu > * {
+    flex: 1; /* Da flexibilidad a los hijos */
+    text-align: center; /* Alinea el contenido de los hijos en el centro */
+}
+
+.navbar-nav {
+    display: flex; /* Asegura que los enlaces se alineen correctamente */
+    gap: 20px; /* Espacio entre los elementos */
+}
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 991.98px) {
+    .nav-container-menu {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .dropdown {
+        margin-top: 10px;
+        align-self: flex-end;
+    }
+}
+
+.pie {
+    background-color: #343a40; /* Fondo oscuro */
+    color: white; /* Texto blanco */
+    text-align: center; /* Centrar el texto */
+    padding: 1rem 0; /* Añadir un poco de espacio vertical */
+    width: 100%; /* Ocupar todo el ancho */
+}
+/*
+.footer-fixed-bottom {
+	            width: 100%;
+				height: 60px;
+	            background-color: #343a40;
+	        }
+*/
+/* Asegura que el footer esté bien centrado */
+/*.footer-fixed-bottom .container {
+    text-align: center;
+    color: white;
+}
+*/

@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout::head}">
+    <title>Formulario de Cliente</title>
+</head>
+<body>
+
+<header th:replace="~{layout::header}"></header>
+<nav th:replace="~{layout::menu}"></nav>
+
+<div th:fragment="content" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h1 id="formTitle" data-entity="Cliente">Cliente</h1>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/vistasCliente/GuardarCliente}" th:object="${regiscliente}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="form-group">
+                            <label for="dni">DNI:</label>
+                            <input type="text" th:field="*{dni}" id="dni" class="form-control" required
+                                   pattern="[0-9]{8}" maxlength="8"
+                                   title="Ingrese el DNI de 8 dígitos" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required
+                                   pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+                                   title="Ingrese su nombre correctamente" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="apellido">Apellido:</label>
+                            <input type="text" th:field="*{apellido}" id="apellido" class="form-control" required
+                                   pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+                                   title="Ingrese su apellido correctamente" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" th:field="*{email}" id="email" class="form-control" required
+                                   pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" 
+                                   title="Ejemplo: usuario@dominio.com" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefono">Teléfono:</label>
+                            <input type="text" th:field="*{telefono}" id="telefono" class="form-control" required
+                                   pattern="[0-9]{9}" maxlength="9" 
+                                   title="Ingrese el número de 9 dígitos" />
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                            <a th:href="@{/vistasCliente/listarClientes}" class="btn btn-secondary ml-2">Regresar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout::footer}"></footer>
+
+<script>
+    // Establece el título dinámico basado en el modo y el data-entity
+    window.onload = function () {
+        const formTitle = document.getElementById("formTitle");
+        const entity = formTitle?.dataset?.entity || "";
+        const mode = sessionStorage.getItem("formMode");
+
+        if (formTitle) {
+            if (mode === "edit") {
+                formTitle.innerText = "Actualizar " + entity;
+            } else {
+                formTitle.innerText = "Crear Nuevo " + entity;
+            }
+        }
+
+        sessionStorage.removeItem("formMode");
+    };
+</script>
+
+</body>
+</html>

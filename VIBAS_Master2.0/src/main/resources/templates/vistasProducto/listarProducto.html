@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout::head}">
+    <title>Listado de Productos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
+</head>
+<body>
+
+<header th:replace="~{layout::header}"></header>
+<nav th:replace="~{layout::menu}"></nav>
+
+<div th:fragment="content" class="container mt-5">
+    <h2 class="mb-4 text-center">Listado de Productos</h2>
+
+    <form class="form-inline justify-content-center mb-4" th:action="@{/vistasProducto/listarProducto}" method="get">
+        <label for="busqueda" class="mr-2 font-weight-bold">Filtrar:</label>
+        <input type="text" name="busqueda" id="busqueda" th:value="${busqueda}"
+               class="form-control mr-2" placeholder="Digite un valor...">
+        <button type="submit" class="btn btn-primary mr-2">
+            <i class="fas fa-search"></i> Buscar
+        </button>
+        <a th:href="@{/vistasProducto/listarProducto}" class="btn btn-secondary">
+            <i class="fas fa-eraser"></i> Limpiar
+        </a>
+    </form>
+
+	<div class="text-right mb-3">
+	    <a th:href="@{/vistasProducto/RegistrarProducto}" class="btn btn-success">
+	        <i class="fas fa-box-open"></i> Nuevo Producto
+	    </a>
+	</div>
+	<!--elminar en caso este mal-->
+	<!--EN CASO NO FUNCIONE BORRAR-->
+	<div class="text-right mb-3">
+		    <a th:href="@{/vistasProducto/exportarPDF}" th:if="${user.cargo.nombrecargo == 'ADMINISTRADOR'}" class="btn btn-outline-danger" target="_blank">
+		        <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+		    </a>
+		</div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="producto : ${productos}">
+                    <td th:text="${producto.nomproducto}">Nombre</td>
+                    <td th:text="${producto.preproducto}">Precio</td>
+                    <td th:text="${producto.stockproducto}">Stock</td>
+                    <td th:text="${producto.catproducto}">Categoría</td>
+					<td class="text-center">
+					    <a th:href="@{'/vistasProducto/editar/' + ${producto.idproducto}}"
+					       class="btn btn-warning btn-sm mr-1"
+					       onclick="setAction('edit')" 
+						   th:if="${user.cargo.nombrecargo == 'ADMINISTRADOR'}">
+					        <i class="fas fa-edit"></i> Editar
+					    </a>
+					    <a href="#" class="btn btn-danger btn-sm"
+					       th:data-id="${producto.idproducto}"
+					       onclick="confirmDelete(this)" 
+						   th:if="${user.cargo.nombrecargo == 'ADMINISTRADOR'}">
+					        <i class="fas fa-trash-alt"></i> Eliminar
+					    </a>
+					</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+	
+	<!-- Paginación -->
+	<nav th:if="${totalPages > 1}" aria-label="Page navigation">
+	    <ul class="pagination justify-content-center">
+	        <!-- Botón Anterior -->
+	        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+	            <a class="page-link" th:href="@{/vistasProducto/listarProducto(page=${currentPage - 1}, size=5, busqueda=${busqueda})}">Anterior</a>
+	        </li>
+
+	        <!-- Números de página -->
+	        <li class="page-item"
+	            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+	            th:classappend="${i == currentPage} ? 'active'">
+	            <a class="page-link"
+	               th:href="@{/vistasProducto/listarProducto(page=${i}, size=5, busqueda=${busqueda})}"
+	               th:text="${i + 1}">1</a>
+	        </li>
+
+	        <!-- Botón Siguiente -->
+	        <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+	            <a class="page-link" th:href="@{/vistasProducto/listarProducto(page=${currentPage + 1}, size=5, busqueda=${busqueda})}">Siguiente</a>
+	        </li>
+	    </ul>
+	</nav>
+	
+</div>
+
+<footer th:replace="~{layout::footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+<script>
+    // Guarda en sessionStorage el modo del formulario
+    function setAction(action) {
+        sessionStorage.setItem('formMode', action);
+    }
+
+    function confirmDelete(element) {
+        const productId = element.getAttribute('data-id');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción eliminará el producto. ¿Deseas continuar?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/vistasProducto/eliminar/' + productId;
+            }
+        });
+        return false; // Evita la navegación directa del enlace
+    }
+</script>
+
+</body>
+</html>

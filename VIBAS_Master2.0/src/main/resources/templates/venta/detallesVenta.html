@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout::head}">
+    <title th:text="'Detalles de la Venta #' + ${venta.codigoVenta}"></title>
+    <style>
+        .detail-label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #333;
+        }
+
+        .total-amount {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: green;
+        }
+
+        .product-table th, .product-table td {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <header th:replace="~{layout::header}">
+    </header>
+
+    <nav th:replace="~{layout::menu}">
+    </nav>
+
+    <div th:fragment="content" class="container mt-4">
+        <h1 class="mb-4 text-primary">Detalles de la Venta <span th:text="'#' + ${venta.codigoVenta}"></span></h1>
+		<div>
+			<a th:href="@{/venta/listarVentas}" class="btn btn-secondary mt-3">Volver al Listado de Ventas</a>
+			<a th:href="@{/venta/pdf/{codigoVenta}(codigoVenta=${venta.codigoVenta})}" 
+			class="btn btn-warning btn-sm">
+			Comprobante</a>
+			
+		</div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-4 p-3 border rounded bg-light">
+                    <h3 class="mb-2 text-info">Información de la Venta</h3>
+                    <p><span class="detail-label">ID Venta:</span> <span th:text="${venta.codigoVenta}"></span></p>
+                    <p><span class="detail-label">Fecha:</span> <span th:text="${#dates.format(venta.fechaVenta, 'EEEE dd/MM/yyyy HH:mm')}"></span></p>
+                    <p><span class="detail-label">Monto Total:</span> <span class="total-amount" th:text="${#numbers.formatCurrency(venta.monto)}"></span></p>
+                </div>
+
+                <div th:if="${venta.tbl_Cliente}" class="mb-4 p-3 border rounded bg-light">
+                    <h3 class="mb-2 text-info">Información del Cliente</h3>
+                    <p><span class="detail-label">ID:</span> <span th:text="${venta.tbl_Cliente.id}"></span></p>
+                    <p><span class="detail-label">DNI:</span> <span th:text="${venta.tbl_Cliente.dni}"></span></p>
+                    <p><span class="detail-label">Nombre:</span> <span th:text="${venta.tbl_Cliente.nombre}"></span></p>
+                    <p><span class="detail-label">Apellido:</span> <span th:text="${venta.tbl_Cliente.apellido}"></span></p>
+                    <p><span class="detail-label">Email:</span> <span th:text="${venta.tbl_Cliente.email}"></span></p>
+                    <p><span class="detail-label">Teléfono:</span> <span th:text="${venta.tbl_Cliente.telefono}"></span></p>
+                </div>
+                <div th:unless="${venta.tbl_Cliente}" class="alert alert-warning">
+                    No se asignó un cliente a esta venta.
+                </div>
+				<div th:if="${venta.tbl_empleado}" class="mb-4 p-3 border rounded bg-light">
+                    <h3 class="mb-2 text-info">Información del Empleado</h3>
+                    <p><span class="detail-label">DNI:</span> <span th:text="${venta.tbl_empleado.dni}"></span></p>
+                    <p><span class="detail-label">Nombre:</span> <span th:text="${venta.tbl_empleado.nombre}"></span></p>
+                    <p><span class="detail-label">Apellido:</span> <span th:text="${venta.tbl_empleado.apellido}"></span></p>
+                    <p><span class="detail-label">Email:</span> <span th:text="${venta.tbl_empleado.email}"></span></p>
+                    <p><span class="detail-label">Teléfono:</span> <span th:text="${venta.tbl_empleado.telefono}"></span></p>
+                </div>
+                <div th:unless="${venta.tbl_empleado}" class="alert alert-info">
+                    No se encontró información del empleado para esta venta.
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h2 class="mt-md-0 mt-4 text-success">Productos Vendidos</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered product-table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="detalle : ${venta.detalleVentaList}">
+                                <td th:text="${detalle.tbl_producto.idproducto}"></td>
+                                <td th:text="${detalle.tbl_producto.nomproducto}"></td>
+                                <td th:text="${detalle.cantidadDetVenta}"></td>
+                                <td th:text="${#numbers.formatCurrency(detalle.precioDetVenta)}"></td>
+                                <td th:text="${#numbers.formatCurrency(detalle.montoDetVenta)}"></td>
+                            </tr>
+                            <tr th:if="${detalle.isEmpty()}">
+                                <td colspan="5" class="text-center text-muted">No se encontraron productos en esta venta.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <footer th:replace="~{layout::footer}"></footer>
+</body>
+</html>

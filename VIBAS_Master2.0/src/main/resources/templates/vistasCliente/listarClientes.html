@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html 	xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout::head}">
+    <title>Listado de Clientes</title>
+</head>
+<body>
+
+<header th:replace="~{layout::header}"></header>
+<nav th:replace="~{layout::menu}"></nav>
+
+<div th:fragment="content"  class="container mt-5">
+    <h2 class="mb-4 text-center">Listado de Clientes</h2>
+
+    <!-- Filtro de búsqueda -->
+    <form class="form-inline justify-content-center mb-4" th:action="@{/vistasCliente/listarClientes}" method="get">
+        <label for="busqueda" class="mr-2 font-weight-bold">Filtrar:</label>
+        <input type="text" name="busqueda" id="busqueda" th:value="${busqueda}"
+               class="form-control mr-2" placeholder="Digite un valor..." required>
+        <button type="submit" class="btn btn-primary mr-2">
+            <i class="fas fa-search"></i> Buscar
+        </button>
+        <a th:href="@{/vistasCliente/listarClientes}" class="btn btn-secondary">
+            <i class="fas fa-eraser"></i> Limpiar
+        </a>
+    </form>
+
+    <!-- Botón nuevo cliente -->
+	<div class="text-right mb-3">
+	    <a th:href="@{/vistasCliente/RegistrarCliente}" class="btn btn-success" onclick="setAction('create')">
+	        <i class="fas fa-user-plus"></i> Nuevo Cliente
+	    </a>
+	</div>
+	<!--EN CASO NO FUNCIONE BORRAR-->
+	<div class="text-right mb-3">
+			    <a th:href="@{/vistasCliente/exportarPDF}" class="btn btn-outline-danger" target="_blank" th:if="${user.cargo.nombrecargo == 'ADMINISTRADOR'}">
+			        <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+			    </a>
+			</div>
+    <!-- Tabla de clientes -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th>DNI</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cliente : ${clientes}">
+                    <td th:text="${cliente.dni}">DNI</td>
+                    <td th:text="${cliente.nombre}">Nombre</td>
+                    <td th:text="${cliente.apellido}">Apellido</td>
+                    <td th:text="${cliente.telefono}">Teléfono</td>
+                    <td th:text="${cliente.email}">Email</td>
+					<td class="text-center">
+					    <a th:href="@{'/vistasCliente/editar/' + ${cliente.id}}"
+					       class="btn btn-warning btn-sm mr-1"
+					       onclick="setAction('edit')" 
+						   th:if="${user.cargo.nombrecargo == 'ADMINISTRADOR'}">
+					        <i class="fas fa-edit"></i> Editar
+					    </a>
+
+					    <a href="#" class="btn btn-danger btn-sm"
+					       th:attr="data-id=${cliente.id}"
+					       onclick="confirmarEliminacion(this)" 
+						   th:if="${user.cargo.nombrecargo == 'ADMINISTRADOR'}">
+					        <i class="fas fa-trash-alt"></i> Eliminar
+					    </a>
+					</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+	
+	<!-- Paginación -->
+	<nav th:if="${totalPages > 1}" aria-label="Page navigation">
+	    <ul class="pagination justify-content-center">
+	        <!-- Botón Anterior -->
+	        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+	            <a class="page-link" th:href="@{/vistasCliente/listarClientes(page=${currentPage - 1}, size=5, busqueda=${busqueda})}">Anterior</a>
+	        </li>
+
+	        <!-- Números de página -->
+	        <li class="page-item"
+	            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+	            th:classappend="${i == currentPage} ? 'active'">
+	            <a class="page-link"
+	               th:href="@{/vistasCliente/listarClientes(page=${i}, size=5, busqueda=${busqueda})}"
+	               th:text="${i + 1}">1</a>
+	        </li>
+
+	        <!-- Botón Siguiente -->
+	        <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+	            <a class="page-link" th:href="@{/vistasCliente/listarClientes(page=${currentPage + 1}, size=5, busqueda=${busqueda})}">Siguiente</a>
+	        </li>
+	    </ul>
+	</nav>
+	
+</div>
+
+<footer th:replace="~{layout::footer}"></footer>
+
+<script>
+    // Guarda en sessionStorage el modo del formulario
+    function setAction(action) {
+        sessionStorage.setItem('formMode', action);
+    }
+
+    function confirmarEliminacion(elemento) {
+        const clienteId = elemento.getAttribute("data-id");
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirecciona a la URL de eliminación
+                window.location.href = `/vistasCliente/eliminar/${clienteId}`;
+            }
+        });
+
+        // Prevenir el comportamiento por defecto del enlace
+        return false;
+    }
+</script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>
+

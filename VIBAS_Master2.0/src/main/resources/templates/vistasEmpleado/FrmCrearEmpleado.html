@@ -1,0 +1,184 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--	<head th:replace="~{layout::head}">>-->
+<!--		<title>Formulario de Empleados</title>-->
+<!--	</head>-->
+<!--	<body>-->
+<!--		 Footer de pagina -->
+<!--		<header th:replace="~{layout::header}">-->
+<!--		</header>-->
+		    
+<!--		 Menu -->
+<!--		<nav th:replace="~{layout::menu}">-->
+<!--		</nav>-->
+	
+<!--		 Contenido -->
+<!--		<div class="container">-->
+<!--				<div class="row">-->
+<!--					<div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">-->
+<!--						<h1 class="text-center">Registro de Empleados:</h1>-->
+<!--						<div class="card-body">-->
+<!--							<form th:action="@{/vistasEmpleado/GuardarEmpleado}" th:object="${empleado}" method="post">-->
+<!--								<table>-->
+<!--									<input type="hidden" th:field="*{id}">-->
+<!--										<tr>-->
+<!--											<td>DNI:</td>-->
+<!--											<td><input type="text" th:field="*{dni}" required="required"-->
+<!--												pattern="[0-9]{8}" maxlength="8" title="Ingrese el DNI"></td>-->
+<!--										</tr>-->
+<!--										<tr>-->
+<!--											<td>Nombre:</td>-->
+<!--											<td><input type="text" th:field="*{nombre}" required="required"-->
+<!--												pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Ingrese su Nombre"></td>-->
+<!--										</tr>-->
+
+<!--										<tr>-->
+<!--											<td>Apellido:</td>-->
+<!--											<td><input type="text" th:field="*{apellido}" required="required"-->
+<!--												pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Ingrese su Apellido"></td>-->
+<!--										</tr>-->
+
+<!--										<tr>-->
+<!--										    <td>Email:</td>-->
+<!--										    <td><input type="email" th:field="*{email}" required="required"-->
+<!--										               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"-->
+<!--										               title="Ingrese un correo electrónico válido (ej: usuario@dominio.com)"></td>-->
+<!--										</tr>-->
+<!--										<tr>-->
+<!--											<td>Teléfono:</td>-->
+<!--											<td><input type="text" th:field="*{telefono}" required="required"-->
+<!--											pattern="[0-9]{9}" maxlength="9" title="Ingrese el Teléfono"></td>-->
+<!--										</tr>-->
+<!--									<tr>-->
+<!--										<td>-->
+<!--										<input type="submit" value="Registrar"-->
+<!--										class="btn btn-primary">-->
+<!--										<a th:href="@{/vistasEmpleado/listarEmpleados}" class="btn btn-info">Regresar</a>-->
+
+<!--										</td>-->
+<!--									</tr>-->
+<!--							</table>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+		
+<!--		 Pie de Pagina -->
+<!--		<footer th:replace="~{layout::footer}"></footer>-->
+<!--	</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout::head}">
+    <title>Formulario de Empleado</title>
+</head>
+<body>
+
+<header th:replace="~{layout::header}"></header>
+<nav th:replace="~{layout::menu}"></nav>
+
+<div th:fragment="content" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h1 id="formTitle" data-entity="Empleado">Empleado</h1>
+                </div>
+                <div class="card-body">
+					<form th:action="@{/vistasEmpleado/GuardarEmpleado}" th:object="${empleado}" method="post" onsubmit="validateForm(event)">
+					  <input type="hidden" th:field="*{id}" />
+					  <div class="row mb-6">
+					      <div class="col-md-4 mb-2">
+					          <label for="dni">DNI:</label>
+					          <input type="text" th:field="*{dni}" id="dni" class="form-control" required
+					                 pattern="[0-9]{8}" maxlength="8"
+					                 title="Ingrese el DNI de 8 dígitos" />
+					      </div>
+					      <div class="col-md-4 mb-2">
+					          <label for="nombre">Nombre:</label>
+					      <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required
+					             pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+					             title="Ingrese su nombre correctamente" />
+					      </div>
+					      <div class="col-md-4 mb-2">
+					          <label for="apellido">Apellido:</label>
+					      <input type="text" th:field="*{apellido}" id="apellido" class="form-control" required
+					             pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+					             title="Ingrese su apellido correctamente" />
+					      </div>
+					  </div>
+
+					  <div class="form-group">
+					      <label for="email">Email:</label>
+					      <input type="email" th:field="*{email}" id="email" class="form-control" required
+					             pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" 
+					             title="Ejemplo: usuario@dominio.com" />
+					  </div>
+
+					  <div class="row mb-6">
+					      <div class="col-md-6 mb-2">
+					          <label for="telefono">Teléfono:</label>
+					      <input type="text" th:field="*{telefono}" id="telefono" class="form-control" required
+					             pattern="[0-9]{9}" maxlength="9" 
+					             title="Ingrese el número de 9 dígitos" />
+					      </div>
+					      <div class="col-md-6 mb-2">
+					          <label for="nombre">Usuario:</label>
+					      <input type="text" th:field="*{username}" id="nombre" class="form-control" required
+					             pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+					             title="Ingrese su nombre correctamente" />
+					      </div>
+					  </div>
+					  <div class="row mb-6">
+					      <div class="col-md-6 mb-2">
+					         <label for="password">Contraseña</label>
+					      <input type="password" th:field="*{password}" id="password" class="form-control" placeholder="Crea una contraseña segura" required>
+					      </div>
+					      <div class="col-md-6 mb-2">
+					         <label for="confirmPassword">Confirmar Contraseña</label>
+					      <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Repite tu contraseña" required>
+					      </div>
+					   </div>
+					  <div class="text-center mt-4">
+					      <button type="submit" class="btn btn-success">Registrar</button>
+					      <a th:href="@{/vistasEmpleado/listarEmpleados}" class="btn btn-secondary ml-2">Regresar</a>
+					  </div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout::footer}"></footer>
+
+<script>
+    // Establece el título dinámico basado en el modo y el data-entity
+    window.onload = function () {
+        const formTitle = document.getElementById("formTitle");
+        const entity = formTitle?.dataset?.entity || "";
+        const mode = sessionStorage.getItem("formMode");
+
+        if (formTitle) {
+            if (mode === "edit") {
+                formTitle.innerText = "Actualizar " + entity;
+            } else {
+                formTitle.innerText = "Crear Nuevo " + entity;
+            }
+        }
+
+        sessionStorage.removeItem("formMode");
+    };
+	function validateForm(event) {
+	            const password = document.getElementById('password').value;
+	            const confirmPassword = document.getElementById('confirmPassword').value;
+	            if (password !== confirmPassword) {
+	                alert("Las contraseñas no coinciden. Por favor, verifica.");
+	                event.preventDefault(); // Evitar que se envíe el formulario
+	            }
+	        }
+</script>
+
+</body>
+</html>

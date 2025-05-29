@@ -1,0 +1,155 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--	<head th:replace="~{layout::head}">>-->
+<!--		<title>Formulario de Producto</title>-->
+<!--	</head>-->
+<!--	<body>-->
+<!--		 Footer de pagina -->
+<!--		<header th:replace="~{layout::header}">-->
+<!--		</header>-->
+		    
+<!--		 Menu -->
+<!--		<nav th:replace="~{layout::menu}">-->
+<!--		</nav>-->
+	
+<!--		 Contenido -->
+<!--		<div class="container">-->
+<!--				<div class="row">-->
+<!--					<div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">-->
+<!--						<h1 class="text-center">Registro de Productos:</h1>-->
+<!--						<div class="card-body">-->
+<!--							<form th:action="@{/vistasProducto/GuardarProducto}" th:object="${producto}" method="post">-->
+<!--								<table>-->
+<!--									<input type="hidden" th:field="*{idproducto}" th:if="${producto.idproducto != null}">-->
+<!--										<tr>-->
+<!--											<td>Nombre:</td>-->
+<!--											<td><input type="text" th:field="*{nomproducto}" required="required"-->
+<!--												title="Ingrese el nombre del producto"></td>-->
+<!--										</tr>-->
+<!--										<tr>-->
+<!--											<td>Descripción:</td>-->
+<!--											<td><input type="text" th:field="*{desproducto}" required="required"-->
+<!--												title="Ingrese la descripción del producto"></td>-->
+<!--										</tr>-->
+
+<!--										<tr>-->
+<!--											<td>Precio:</td>-->
+<!--											<td><input type="number" step="0.01" th:field="*{preproducto}" required="required"-->
+<!--												title="Ingrese el precio del producto"></td>-->
+<!--										</tr>-->
+
+<!--										<tr>-->
+<!--										    <td>Stock:</td>-->
+<!--										    <td><input type="number" th:field="*{stockproducto}" required="required"-->
+<!--										               title="Ingrese el stock del producto"></td>-->
+<!--										</tr>-->
+<!--										<tr>-->
+<!--											<td>Categoría:</td>-->
+<!--											<td><input type="text" th:field="*{catproducto}" required="required"-->
+<!--											title="Ingrese la categoría del producto"></td>-->
+<!--										</tr>-->
+<!--									<tr>-->
+<!--										<td>-->
+<!--										<input type="submit" value="Registrar"-->
+<!--										class="btn btn-primary">-->
+<!--										<a th:href="@{/vistasProducto/listarProducto}" class="btn btn-info">Regresar</a>-->
+
+<!--										</td>-->
+<!--									</tr>-->
+<!--							</table>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+		
+<!--		 Pie de Pagina -->
+<!--		<footer th:replace="~{layout::footer}"></footer>-->
+<!--	</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout::head}">
+    <title>Formulario de Producto</title>
+</head>
+<body>
+
+<header th:replace="~{layout::header}"></header>
+<nav th:replace="~{layout::menu}"></nav>
+
+<div th:fragment="content" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h1 id="formTitle" data-entity="Producto">Producto</h1>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/vistasProducto/GuardarProducto}" th:object="${producto}" method="post">
+                        <input type="hidden" th:field="*{idproducto}" />
+
+                        <div class="form-group">
+                            <label for="nomproducto">Nombre:</label>
+                            <input type="text" th:field="*{nomproducto}" id="nomproducto" class="form-control" required
+                                   title="Ingrese el nombre del producto" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="desproducto">Descripción:</label>
+                            <input type="text" th:field="*{desproducto}" id="desproducto" class="form-control" required
+                                   title="Ingrese la descripción del producto" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="preproducto">Precio:</label>
+                            <input type="number" step="0.01" th:field="*{preproducto}" id="preproducto" class="form-control" required
+                                   title="Ingrese el precio del producto" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stockproducto">Stock:</label>
+                            <input type="number" th:field="*{stockproducto}" id="stockproducto" class="form-control" required
+                                   title="Ingrese el stock del producto" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="catproducto">Categoría:</label>
+                            <input type="text" th:field="*{catproducto}" id="catproducto" class="form-control" required
+                                   title="Ingrese la categoría del producto" />
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                            <a th:href="@{/vistasProducto/listarProducto}" class="btn btn-secondary ml-2">Regresar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout::footer}"></footer>
+
+<script>
+    // Establece el título dinámico basado en el modo y el data-entity
+    window.onload = function () {
+        const formTitle = document.getElementById("formTitle");
+        const entity = formTitle?.dataset?.entity || "";
+        const mode = sessionStorage.getItem("formMode");
+
+        if (formTitle) {
+            if (mode === "edit") {
+                formTitle.innerText = "Actualizar " + entity;
+            } else {
+                formTitle.innerText = "Crear Nuevo " + entity;
+            }
+        }
+
+        sessionStorage.removeItem("formMode");
+    };
+</script>
+
+</body>
+</html>

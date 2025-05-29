@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout::head}">
+    <title>Venta</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1240px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #edf2f7;
+            padding: 1rem 1.25rem;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+        }
+        
+        .card-header h3 {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-header h3:before {
+            margin-right: 10px;
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            opacity: 0.7;
+        }
+        
+        .card-header h3:nth-of-type(1):before {
+            content: "\f007";
+        }
+        
+        .card-header h3:nth-of-type(2):before {
+            content: "\f02b";
+        }
+        
+        .card-header h3:nth-of-type(3):before {
+            content: "\f07a";
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Formularios y botones */
+        .form-control, .btn, select {
+            border-radius: 6px;
+        }
+        
+        .form-control, select {
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease-in-out;
+        }
+        
+        .form-control:focus, select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+        }
+        
+        .btn-sm {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.8rem;
+        }
+        
+        .btn-outline-primary {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-outline-success {
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-outline-success:hover {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-outline-danger {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-outline-warning {
+            color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        
+        .btn-outline-warning:hover {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #219653;
+            border-color: #219653;
+        }
+        
+        /* Select2 personalizaciones */
+        .select2-container .select2-selection--single {
+            height: 38px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+        
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            line-height: 36px;
+            padding-left: 12px;
+        }
+        
+        .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+        
+        .select2-container {
+            width: 100% !important;
+        }
+        
+        .select2-dropdown {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: var(--accent-color);
+        }
+        
+        /* Tabla del carrito */
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th, .table td {
+            vertical-align: middle !important;
+            border-color: #edf2f7;
+            padding: 0.75rem 1rem;
+        }
+        
+        .table thead th {
+            background-color: #f8fafc;
+            color: var(--secondary-color);
+            border-bottom: 2px solid #edf2f7;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f8fafd;
+        }
+        
+        .table tbody td {
+            font-size: 0.9rem;
+        }
+        
+        /* Cliente info card */
+        .cliente-info {
+            background-color: #fff;
+            padding: 1.2rem;
+            border: 1px solid #edf2f7;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+        }
+        
+        .cliente-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 0.5rem;
+        }
+        
+        .cliente-info p {
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cliente-info p strong {
+            min-width: 80px;
+            display: inline-block;
+            color: #2d3748;
+        }
+        
+        .carrito-total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--danger-color);
+        }
+        
+        .acciones-carrito a {
+            margin-left: 0.5rem;
+        }
+        
+        /* Espaciado para formularios inline */
+        .form-inline > * {
+            margin-bottom: 0.5rem;
+            margin-right: 0.75rem;
+        }
+        
+        .form-inline label {
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        
+        /* Headers de página */
+        h1.mb-4 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem !important;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h1.mb-4:after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 767px) {
+            .form-inline {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            
+            .form-inline label {
+                margin-bottom: 0.25rem;
+                display: block;
+            }
+            
+            .form-inline input, .form-inline select {
+                width: 100% !important;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+            
+            .form-inline button {
+                align-self: flex-start;
+            }
+            
+            .carrito-total {
+                font-size: 1.2rem;
+            }
+            
+            .acciones-carrito {
+                display: flex;
+                justify-content: center;
+            }
+            
+            .acciones-carrito a {
+                margin: 0.25rem;
+            }
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .cliente-info, .alert {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Fade effect for table rows */
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <header th:replace="~{layout::header}"></header>
+    <nav th:replace="~{layout::menu}"></nav>
+
+    <div th:fragment="content" class="container mt-4">
+        <h1 class="mb-4 text-center">Sistema de Ventas</h1>
+
+        <div th:if="${mensaje}" class="alert alert-danger" role="alert">
+           <i class="fas fa-exclamation-circle mr-2"></i><span th:text="${mensaje}"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3><i class="fas fa-user-check mr-2"></i>Buscar Cliente</h3>
+                            </div>
+                            <div class="card-body">
+                                <form class="form-inline align-items-center mb-3" action="/venta/buscarCliente" method="get">
+                                    <label for="dniCliente">DNI Cliente:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="dniCliente" name="dniCliente"
+                                               required
+                                               pattern="[0-9]{8}"
+                                               maxlength="8"
+                                               title="Ingrese un DNI válido de 8 dígitos numéricos" />
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-outline-primary">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <a th:href="@{/vistasCliente/RegistrarCliente}" class="btn btn-success mt-2">
+                                        <i class="fas fa-user-plus mr-1"></i> Nuevo Cliente
+                                    </a>
+                                </form>
+
+                                <div th:if="${clienteBuscado != null}" class="mt-3 cliente-info">
+                                    <h4><i class="fas fa-user-check mr-2"></i>Cliente Encontrado</h4>
+                                    <p><strong>DNI:</strong> <span th:text="${clienteBuscado.dni}"></span></p>
+                                    <p><strong>Nombre:</strong> <span th:text="${clienteBuscado.nombre}"></span></p>
+                                    <p><strong>Apellido:</strong> <span th:text="${clienteBuscado.apellido}"></span></p>
+                                    <p><strong>Teléfono:</strong> <span th:text="${clienteBuscado.telefono}"></span></p>
+                                </div>
+                                <div th:if="${clienteBuscado == null && (busquedaRealizada != null ? busquedaRealizada : false)}" class="mt-3 alert alert-warning" role="alert">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>No se encontró cliente con DNI: <span th:text="${dniBuscado}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3><i class="fas fa-user-check mr-2"></i>Agregar Producto</h3>
+                            </div>
+                            <div class="card-body">
+                                <form class="form-inline align-items-center mb-3" action="/venta/agregar" method="get">
+                                    <label for="idProducto">Producto:</label>
+                                    <select class="form-control select2-single" id="productoSelect" name="idProducto" required>
+                                        <option value="">Seleccionar...</option>
+                                        <option th:each="p : ${productos}"
+                                                th:value="${p.idproducto}"
+                                                th:text="${p.nomproducto}"></option>
+                                    </select>
+                                    <div class="d-flex align-items-center mt-2">
+                                        <label for="cantidad" class="mr-2">Cantidad:</label>
+                                        <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" value="1" required style="width: 80px;">
+                                    </div>
+									<button type="submit" class="btn btn-outline-success mt-2">
+									   <i class="fas fa-plus mr-1"></i>Agregar
+									</button>
+                                    <div th:if="${errorStock}" class="alert alert-danger mt-2 w-100" role="alert">
+                                        <i class="fas fa-exclamation-circle mr-1"></i>
+                                        <span th:text="${errorStock}"></span>
+                                    </div>
+                                </form>
+                                <div th:if="${errorProducto}" class="alert alert-danger mt-2" role="alert">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                    <span th:text="${errorProducto}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">
+                         <h3><i class="fas fa-shopping-cart fa-lg mr-2"></i>Carrito</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th class="text-center">Cantidad</th>
+                                        <th class="text-right">Precio</th>
+                                        <th class="text-right">Total</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="detalle, rowStat : ${venta.detalleVentaList}">
+                                        <td class="align-middle" th:text="${detalle.tbl_producto.nomproducto}"></td>
+                                        <td class="align-middle text-center">
+                                            <form th:action="@{/venta/actualizarCantidad}" method="post" class="form-inline justify-content-center">
+                                                <input type="hidden" name="idProducto" th:value="${detalle.tbl_producto.idproducto}" />
+                                                <div class="input-group input-group-sm" style="width: 100px;">
+                                                    <input type="number" class="form-control"
+                                                           th:name="cantidad" th:value="${detalle.cantidadDetVenta}" min="1">
+                                                    <div class="input-group-append">
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                            <i class="fas fa-sync-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </td>
+                                        <td class="align-middle text-right" th:text="${#numbers.formatDecimal(detalle.precioDetVenta, 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td class="align-middle text-right" th:text="${#numbers.formatDecimal(detalle.montoDetVenta, 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td class="align-middle text-center acciones-carrito">
+                                            <a th:href="@{/venta/eliminar(idProducto=${detalle.tbl_producto.idproducto})}" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${venta.detalleVentaList.empty}">
+                                        <td colspan="5" class="text-center py-4">
+                                            <div class="alert alert-info mb-0">
+                                                <i class="fas fa-shopping-cart fa-lg mr-2"></i>
+                                                El carrito está vacío.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot th:if="${!venta.detalleVentaList.empty}">
+                                    <tr>
+                                        <td colspan="3" class="text-right font-weight-bold">Total:</td>
+                                        <td class="text-right"><span class="carrito-total" th:text="${#numbers.formatDecimal(montoTotal, 0, 'POINT', 2, 'COMMA')}"></span></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-end align-items-center mt-4">
+                            <a th:href="@{/venta/limpiarCarrito}" class="btn btn-outline-warning mr-3">
+                                <i class="fas fa-broom mr-1"></i> Limpiar
+                            </a>
+                            <a id="generarVentaBtn" href="/venta/generarventa" class="btn btn-success">
+                                <i class="fas fa-check-circle mr-1"></i> Generar Venta
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout::footer}"></footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+    
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            $('.select2-single').select2({
+                placeholder: "Seleccionar producto...",
+                allowClear: true,
+                width: '100%'
+            });
+
+            function actualizarBotonGenerarVenta() {
+                var clienteBuscado = /*[[${clienteBuscado}]]*/ null;
+                var carritoNoVacio = /*[[${!venta.detalleVentaList.empty}]]*/ false;
+                
+                if (clienteBuscado === null || !carritoNoVacio) {
+                    $('#generarVentaBtn').addClass('disabled').css('opacity', '0.6');
+                } else {
+                    $('#generarVentaBtn').removeClass('disabled').css('opacity', '1');
+                }
+            }
+
+            actualizarBotonGenerarVenta();
+
+            if ($('.cliente-info').length > 0) {
+                actualizarBotonGenerarVenta();
+            }
+
+            var errorStock = /*[[${errorStock}]]*/ null;
+            if (errorStock) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Stock',
+                    text: errorStock,
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3498db'
+                });
+            }
+
+            var errorProducto = /*[[${errorProducto}]]*/ null;
+            if (errorProducto) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Producto',
+                    text: errorProducto,
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3498db'
+                });
+            }
+
+            var mensajeExito = /*[[${mensajeExito}]]*/ null;
+            if (mensajeExito) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Venta Generada',
+                    text: mensajeExito,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
+            
+            // Animación para filas de la tabla al agregar productos
+            $('.table tbody tr').each(function(index) {
+                var $this = $(this);
+                setTimeout(function() {
+                    $this.css({
+                        'opacity': '1',
+                        'transform': 'translateY(0)'
+                    });
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>
